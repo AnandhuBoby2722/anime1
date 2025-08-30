@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Anime Episode</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="container">
+    <a href="index.html" class="back-btn">← Home</a>
+    <a id="backToAnime" class="back-btn" style="margin-left:8px">← Back to Anime</a>
+  </header>
+
+  <main class="container" id="playerWrap" style="margin-top:16px;"></main>
+
+  <script>
+    // Load video player based on anime ID and episode
+    const params = new URLSearchParams(window.location.search);
+    const animeId = params.get('id');
+    const epNum = parseInt(params.get('ep')) || 1;
+
+    fetch('data/anime.json')
+      .then(r => r.json())
+      .then(data => {
+        const anime = data.find(a => a.id === animeId);
+        if (!anime) {
+          document.getElementById('playerWrap').innerHTML = "<p>Anime not found.</p>";
+          return;
+        }
+        const episode = anime.episodes[epNum-1] || anime.episodes[0];
+
+        document.getElementById('backToAnime').href = `anime.html?id=${anime.id}`;
+
+        document.getElementById('playerWrap').innerHTML = `
+          <h2>${anime.title} — Episode ${epNum}</h2>
+          <div class="card">
+            <video controls width="100%" poster="${anime.image}" src="https://www.w3schools.com/html/mov_bbb.mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        `;
+      });
+  </script>
+</body>
+</html>
